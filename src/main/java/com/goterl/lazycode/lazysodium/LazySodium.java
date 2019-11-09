@@ -661,7 +661,6 @@ public abstract class LazySodium implements
         byte[] cipherBytes = toBin(cipher);
         byte[] messageBytes = new byte[cipherBytes.length - SecretBox.MACBYTES];
 
-
         if (!cryptoSecretBoxOpenEasy(messageBytes, cipherBytes, cipherBytes.length, nonce, keyBytes)) {
             throw new SodiumException("Could not decrypt message.");
         }

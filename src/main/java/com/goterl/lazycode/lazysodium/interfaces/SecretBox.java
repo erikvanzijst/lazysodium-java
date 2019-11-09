@@ -91,7 +91,7 @@ public interface SecretBox {
         /**
          * Decrypts a message with the mac and the cipher provided
          * separately.
-         * @param message The message length which is the same size as {@code cipherTextLen}.
+         * @param message The message which is the same size as {@code cipherTextLen}.
          * @param cipherText The cipher.
          * @param mac The mac.
          * @param cipherTextLen The cipher text length.
@@ -130,7 +130,7 @@ public interface SecretBox {
 
         /**
          * Decrypts a message that used XSalsa20Poly1305.
-         * @param message The message length which is the same size as {@code cipherTextLen}.
+         * @param message The message which is the same size as {@code cipherTextLen}.
          * @param cipher The cipher text.
          * @param cipherLen The cipher length.
          * @param nonce The nonce.

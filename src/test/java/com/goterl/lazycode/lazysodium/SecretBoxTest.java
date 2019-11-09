@@ -20,11 +20,13 @@ import org.junit.Test;
 public class SecretBoxTest extends BaseTest {
 
 
+    private SecretBox.Native secretBoxNative;
     private SecretBox.Lazy secretBoxLazy;
 
     @Before
     public void before() {
         secretBoxLazy = (SecretBox.Lazy) lazySodium;
+        secretBoxNative = (SecretBox.Native) lazySodium;
     }
 
 
@@ -41,6 +43,26 @@ public class SecretBoxTest extends BaseTest {
         String decrypted = secretBoxLazy.cryptoSecretBoxOpenEasy(cipher, nonce, key);
 
         TestCase.assertEquals(decrypted, message);
+    }
+
+    @Test
+    public void encryptXSalsa20Poly1305() {
+        String message = "This message has to be greater than 32 characters.";
+        byte[] messageBytes = lazySodium.bytes(message);
+        byte[] cipherBytes = new byte[SecretBox.MACBYTES + messageBytes.length];
+
+        byte[] key = new byte[SecretBox.KEYBYTES];
+        lazySodium.getSodium().crypto_secretbox_xsalsa20poly1305_keygen(key);
+        byte[] nonce = lazySodium.nonce(SecretBox.NONCEBYTES);
+        int ok = lazySodium.getSodium().crypto_secretbox_xsalsa20poly1305(cipherBytes, messageBytes, messageBytes.length, nonce, key);
+        if (ok != 0) {
+            throw new RuntimeException("The encryption was unsuccessful. Ensure your message is greater than 32 chars.");
+        }
+
+        byte[] resultBytes = new byte[messageBytes.length];
+        int ok2 = lazySodium.getSodium().crypto_secretbox_xsalsa20poly1305_open(resultBytes, cipherBytes, cipherBytes.length, nonce, key);
+
+        TestCase.assertEquals(message, lazySodium.str(resultBytes));
     }
 
 
